@@ -47,6 +47,7 @@ async function move() {
 	}else{
 		if(clues == "YOU WON!"){
 			console.log("congratulations! you won!");
+			console.log("answer: ", newcode);
 			return true;	
 		}else{
 			console.log(result, " | | ", clues);
