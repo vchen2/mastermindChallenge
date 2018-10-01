@@ -1,5 +1,5 @@
-var prompt = require('prompt');
-
+var prompt = require('prompt-async');
+const _ = require('lodash');
 
 const codeValues = [1,2,3,4,5,6];
 const movesCache = {}; //[guess]: [red, red]
@@ -16,22 +16,30 @@ function startGame() {
 	console.log("Clues take on the form: ");
 	console.log("RED - one of your guesses is the correct number, and in the right position");
 	console.log("WHITE - one of your guesses is the correct number, but in the wrong position");
-	console.log("BLUE - one of  your guesses is not the right color");
+	console.log("BLUE - one of  your guesses is not the right number");
 
 	console.log("You win once you get all four RED clues!");
-
+	
 }
 
-function move() {
-	var result = prompt.get('Please input a guess of this form: 1234 (numbers from 1 to 6)');
-     //request input
-	var clues = processMove(result);
-	if(clues == '') {
+async function getResponse() {
+	prompt.start();
+	console.log('Please input a guess of this form: 1234 (numbers from 1 to 6)');
+	const guess = await prompt.get(['guess']);
+	return guess.guess
+}
+
+async function move() {
+	const result = await getResponse();
+	//request input
+	const moveArray = _.map(result, (num) => parseInt(num));
+	var clues = processMove(moveArray);
+	if(clues === '') {
 		console.log("Please do not enter invalid numbers");
 	}else{
-		if(clues == 'YOU WON!'){
-			return true;
-			console.log("congratulations! you won!")
+		if(clues == "YOU WON!"){
+			console.log("congratulations! you won!");
+			return true;	
 		}else{
 			console.log(result, " | | ", clues);
 		}
@@ -59,7 +67,7 @@ function quickCheck(result) {
 
 function generateCode() {
 	const code = [];
-	for(var i = 0; i<3; i++){
+	for(var i = 0; i < 4; i++){
 		var singleCode = codeValues[Math.floor(Math.random()*codeValues.length)];
 		code.push(singleCode);
 	}
@@ -69,46 +77,51 @@ function generateCode() {
 
 function processMove(move) {
 	//see if they are red
-	const toConsider = newcode;
-	const clues = [];
-	const redCount = 0; 
+	if (!move) {
+		return "INVALID";
+	}
+	const toConsider = _.clone(newcode);
+	console.log(newcode);
+	const clues = ["BLUE", "BLUE", "BLUE", "BLUE"];
+	let redCount = 0; 
 	for (var i = 0; i < 4; i++){
-		const numguess = parseInt((move + '').charAt(i));
-		if (numguess > 7 || numguess < 1){
-			return [];
+		const guessIfRed = move[i];
+		if (guessIfRed > 7 || guessIfRed < 1){
+			return 'INVALID';
 		}
-		if (numguess == newcode[i]){
-			clues.push("RED");
+		if (guessIfRed == newcode[i]){
+			
+			clues[i] = "RED";
 			toConsider[i] = 0;
+			
 			move[i] = 0;
 			redCount = redCount + 1;
 		}
 	}
-
 	if (redCount == 4){
 		return "YOU WON!";
 	}
-
-	for (var i = 0; i<4; i++) {
-		const numguess = parseInt((move + '').charAt(i));
-		if (numguess > 7 || numguess < 1){
-			return '';
+	for (var i = 0; i < 4; i++) {
+		const numguess = move[i];
+		if (numguess > 7 || numguess < 0){
+			return 'INVALID';
 		}
-		if(numguess != 0){
+		if(numguess !== 0){
 			var index = toConsider.indexOf(numguess);
 			if(index == -1){
-				clues.push("BLUE");
+				clues[i]= "BLUE";
 			}else{
 				move[i] = 0;
 				toConsider[index] = 0;
-				clues.push("WHITE");
+				clues[i] = "WHITE";
 			}
 		}
 	}
 	var finalClues = "";
-	for (clue in clues){
-		finalClues = finalClues + " " + clue;
+	for (var clue in clues){
+		finalClues = finalClues + " " + clues[clue];
 	}
+	//console.log(clues[0]);
 	return finalClues;
 }
 

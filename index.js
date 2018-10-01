@@ -1,7 +1,12 @@
 const masterStart = require('./mastermind');
 
-masterStart.startGame();
-var condition = masterStart.move();
-while (!condition){
-	condition = masterStart.move();
+// to run the game, 'node index.js'
+async function start() {
+	masterStart.startGame();
+	var condition = await masterStart.move();
+	while (!condition){
+		condition = await masterStart.move();
+	}
 }
+
+start();

@@ -1,0 +1,27 @@
+{
+  "name": "mastermind-challenge",
+  "version": "1.0.0",
+  "description": "Allows a user to play mastermind through their command line",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js"
+  },
+  "pre-commit": [
+    "test"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vchen2/mastermindChallenge"
+  },
+  "author": "Valerie Chen",
+  "license": "UNLICENSED",
+  "homepage": "https://github.com/vchen2/mastermindChallenge",
+  "dependencies": {
+    "lodash": "^4.17.10",
+    "prompt-async": "^0.9.9"
+  },
+  "engines": {
+    "npm": "^5.7.1",
+    "node": "^8.9.0"
+  }
+}
