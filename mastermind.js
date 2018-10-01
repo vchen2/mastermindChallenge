@@ -6,17 +6,15 @@ const movesCache = {}; //[guess]: [red, red]
 var newcode = [];
 const gameOver = false;
 
-
-
 function startGame() {
 	newcode = generateCode();
 
-	console.log("Weclome to Mastermind! Here are the rules");
+	console.log("Welcome to Mastermind! Here are the rules");
 	console.log("You will be shown your previous guesses and the clues to those guesses");
 	console.log("Clues take on the form: ");
-	console.log("RED - one of your guesses is the correct number, and in the right position");
-	console.log("WHITE - one of your guesses is the correct number, but in the wrong position");
-	console.log("BLUE - one of  your guesses is not the right number");
+	console.log("RED - this guess is the correct number and in the right position");
+	console.log("WHITE - this guess is the correct number but in the wrong position");
+	console.log("BLUE - this guess is not the right number");
 
 	console.log("You win once you get all four RED clues!");
 	
@@ -49,20 +47,6 @@ async function move() {
 	return false;
 	//process result
 	 
-}
-
-function quickCheck(result) {
-	var redCount = 0;
-	for (var i = 0; i < 4; i++){
-		const numguess = parseInt((result + '').charAt(i));
-		if (numguess == newcode[i]){
-			redCount = redCount + 1;
-		}
-	}
-	if (redCount == 4){
-		return true;
-	}
-	return false;
 }
 
 function generateCode() {
@@ -121,7 +105,6 @@ function processMove(move) {
 	for (var clue in clues){
 		finalClues = finalClues + " " + clues[clue];
 	}
-	//console.log(clues[0]);
 	return finalClues;
 }
 
