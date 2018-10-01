@@ -22,8 +22,18 @@ function startGame() {
 
 async function getResponse() {
 	prompt.start();
-	console.log('Please input a guess of this form: 1234 (numbers from 1 to 6)');
-	const guess = await prompt.get(['guess']);
+	console.log('\n');
+	const schema = {
+		properties: {
+		  guess: {
+			description: 'Please input a guess of this form: 1234 (numbers from 1 to 6)',
+			pattern: /^\d{4}$/,
+			message: 'must be 4 digits',
+			required: true
+		  }
+		}
+	  };
+	const guess = await prompt.get(schema);
 	return guess.guess
 }
 
@@ -32,7 +42,7 @@ async function move() {
 	//request input
 	const moveArray = _.map(result, (num) => parseInt(num));
 	var clues = processMove(moveArray);
-	if(clues === '') {
+	if(clues === 'INVALID') {
 		console.log("Please do not enter invalid numbers");
 	}else{
 		if(clues == "YOU WON!"){
@@ -65,12 +75,12 @@ function processMove(move) {
 		return "INVALID";
 	}
 	const toConsider = _.clone(newcode);
-	console.log(newcode);
+	// console.log(newcode);
 	const clues = ["BLUE", "BLUE", "BLUE", "BLUE"];
 	let redCount = 0; 
 	for (var i = 0; i < 4; i++){
 		const guessIfRed = move[i];
-		if (guessIfRed > 7 || guessIfRed < 1){
+		if (guessIfRed > 6 || guessIfRed < 1){
 			return 'INVALID';
 		}
 		if (guessIfRed == newcode[i]){
@@ -87,7 +97,7 @@ function processMove(move) {
 	}
 	for (var i = 0; i < 4; i++) {
 		const numguess = move[i];
-		if (numguess > 7 || numguess < 0){
+		if (numguess > 6 || numguess < 0){
 			return 'INVALID';
 		}
 		if(numguess !== 0){
